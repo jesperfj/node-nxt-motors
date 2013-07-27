@@ -54,7 +54,7 @@ To compile the source you'll need the nbc compiler. From the root of this repo, 
 
     $ . install_nbc.sh
 
-This will download the Mac OS X version. Note that it's always a good idea to inspect shell scripts like this before running it. The shell script will download the nbc tar ball, unpack it in `./nbc`, and add it to `PATH`. Test by running `nbc`:
+(Note that it's always a good idea to inspect shell scripts like this before running it). The shell script will download the Mac OS X nbc tar ball, unpack it in `./nbc`, and add it to `PATH`. Test by running `nbc`:
 
     $ nbc
     Next Byte Codes Compiler version 1.2 (1.2.1.r4, built Tue Mar 15 15:56:24 CDT 2011)
