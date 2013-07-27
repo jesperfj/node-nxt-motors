@@ -19,13 +19,13 @@ The data flow used by this project looks roughly like this:
     Browser
        ^
        |
-      web sockets
+    web sockets
        |
        v
     Node.js server
        ^
        |
-      MotorControl messages over BT serial port
+    MotorControl messages over BT serial port
        |
        v
     NXT brick running MotorControl program
@@ -41,19 +41,35 @@ The setup has only been tested on Mac OS X Mountain Lion. Good luck with other s
 ### Clone repo
 
 
-### NXC coding, compilation and deployment
+### Set up NBC compiler
 
-NXC is a cool C-like language designed specifically for the NXT. The [MotorControl program](http://www.mindstorms.rwth-aachen.de/trac/wiki/MotorControl) is licensed under GPLv3 and the source code has been included in this repo for convenience in the `nxc` directory. The source is available [here](http://www.mindstorms.rwth-aachen.de/trac/browser/trunk/tools/MotorControl).
+NXC is a nice little C-like language designed specifically for the NXT. The [MotorControl program](http://www.mindstorms.rwth-aachen.de/trac/wiki/MotorControl) is licensed under GPLv3 and the source code has been included in this repo for convenience in the `nxc` directory. The source is available [here](http://www.mindstorms.rwth-aachen.de/trac/browser/trunk/tools/MotorControl).
 
-To compile the source you'll need the nbc compiler. Get it as part of
+To compile the source you'll need the nbc compiler. From the root of this repo, run
 
-[Bricxcc Command Center Zip](http://sourceforge.net/projects/bricxcc/files/latest/download?source=files)
+    $ . install_nbc.sh
 
-unzip it and add the path to the NXT folder to your `PATH` environment variable (or move the `nbc` and `nxtcom` commands to `$HOME/bin` or similar spot).
+This will download the Mac OS X version. Note that it's always a good idea to inspect shell scripts like this before running it. The shell script will download the nbc tar ball, unpack it in `./nbc`, and add it to `PATH`. Test by running `nbc`:
 
-[to be continued]
+    $ nbc
+    Next Byte Codes Compiler version 1.2 (1.2.1.r4, built Tue Mar 15 15:56:24 CDT 2011)
+    Copyright (c) 2006-2010, John Hansen
+    Use "nbc -help" for more information.
+    $ 
 
+### Compile and download MotorControl to NXT
 
+Connect the NXT with a USB cable. I've not been able to download code via Bluetooth. To compile and immediately download the MotorControl program to the NXT do:
 
+    $ cd nxc
+    $ nbc -d -S=usb -O=MotorControl22.rxe MotorControl22.nxc
+    # Status: Current file = "/Users/jesper/nxt/node/node-nxt-motors/nxc/MotorControl22.nxc"
+    # Status: NXC compilation begins
+    # Status: Compiling for firmware version 128, NBC/NXC enhanced = FALSE
+    # Status: Running NXC preprocessor
+    ...
+    # Status: Write optimized source to compiler output
+    # Status: Finished
 
+The code should now be on the NXT.
 
