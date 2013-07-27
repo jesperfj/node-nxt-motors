@@ -48,7 +48,7 @@ The usual:
 
 ### Set up NBC compiler
 
-NXC is a nice little C-like language designed specifically for the NXT. The [MotorControl program](http://www.mindstorms.rwth-aachen.de/trac/wiki/MotorControl) is licensed under GPLv3 and the source code has been included in this repo for convenience in the `nxc` directory. The origin is [here](http://www.mindstorms.rwth-aachen.de/trac/browser/trunk/tools/MotorControl).
+[NXC](http://bricxcc.sourceforge.net/nbc/) is a nice little C-like language designed specifically for the NXT. The [MotorControl program](http://www.mindstorms.rwth-aachen.de/trac/wiki/MotorControl) is licensed under GPLv3 and the source code has been included in this repo for convenience in the `nxc` directory. The origin is [here](http://www.mindstorms.rwth-aachen.de/trac/browser/trunk/tools/MotorControl).
 
 To compile the source you'll need the nbc compiler. From the root of this repo, run
 
