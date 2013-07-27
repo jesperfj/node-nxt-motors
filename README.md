@@ -40,10 +40,15 @@ The setup has only been tested on Mac OS X Mountain Lion. Good luck with other s
 
 ### Clone repo
 
+The usual:
+
+    $ git clone https://github.com/jesperfj/node-nxt-motors.git
+    ...
+    $ cd node-nxt-motors
 
 ### Set up NBC compiler
 
-NXC is a nice little C-like language designed specifically for the NXT. The [MotorControl program](http://www.mindstorms.rwth-aachen.de/trac/wiki/MotorControl) is licensed under GPLv3 and the source code has been included in this repo for convenience in the `nxc` directory. The source is available [here](http://www.mindstorms.rwth-aachen.de/trac/browser/trunk/tools/MotorControl).
+NXC is a nice little C-like language designed specifically for the NXT. The [MotorControl program](http://www.mindstorms.rwth-aachen.de/trac/wiki/MotorControl) is licensed under GPLv3 and the source code has been included in this repo for convenience in the `nxc` directory. The origin is [here](http://www.mindstorms.rwth-aachen.de/trac/browser/trunk/tools/MotorControl).
 
 To compile the source you'll need the nbc compiler. From the root of this repo, run
 
