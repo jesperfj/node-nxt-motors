@@ -65,6 +65,8 @@
 #define PROTO_ISMOTORREADY              3
 #define PROTO_CLASSIC_MOTORCMD          4
 #define PROTO_JUMBOPACKET               5
+#define PROTO_SET_LIMIT                 6
+#define PROTO_CONTROLLED_ABS_MOTORCMD   7
 
 
 
@@ -355,6 +357,9 @@ inline bool IsMotorReady(const byte &port) {
 
 }//end function
 
+inline long AbsToRel(long min, long max, byte motor, long angle) {
+    return ((max-min)*angle/100+min)-MotorRotationCount(motor);
+}
 
 
 /*
@@ -529,6 +534,15 @@ task main(){
     taskBrunning = false;
     taskCrunning = false;
 
+    // min and max for absolute positioning
+    // with some safe defaults
+    long min_A = MotorRotationCount(OUT_A);
+    long max_A = min_A+100;
+    long min_B = MotorRotationCount(OUT_B);
+    long max_B = min_B+100;
+    long min_C = MotorRotationCount(OUT_C);
+    long max_C = min_C+100;
+    int edge=0;
 
     DisplayMainScreen();
     //Wait(9000);
@@ -705,6 +719,136 @@ task main(){
                 //PlayTone(440, 50);
 
                 break;
+            case PROTO_CONTROLLED_ABS_MOTORCMD: // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+                #ifdef ENABLEDEBUGGING_REMOTELOGGING
+                    SendDebugMessage(99, "Received controlled absolute motor cmd");
+                #endif
+
+                // parse...
+                tmp      = SubStr(in,  1, 1);  // pos 1
+                port     = StrToNum(tmp);
+
+                tmp      = SubStr(in,  2, 3);  // pos 2 3 4
+                power    = StrToNum(tmp);
+
+                tmp      = SubStr(in,  5, 3);  // pos 5 6 7
+                angle    = StrToNum(tmp);
+
+                tmp      = SubStr(in,  8, 1); // pos 8
+                modebits = StrToNum(tmp);
+
+
+                // bitfield
+                if (modebits & bit1) {
+                    holdbrake = true;
+                } else {
+                    holdbrake = false;
+                }//end if
+
+                if (modebits & bit2) {
+                    speedreg = true;
+                } else {
+                    speedreg = false;
+                }//end if
+
+                if (modebits & bit3) {
+                    smoothstart = true;
+                } else {
+                    smoothstart = false;
+                }//end if
+
+
+                // finally, the command
+                if (port == 0) { // OUT_A
+                    angle = AbsToRel(min_A, max_A, OUT_A, angle);
+                    if(angle < 0) {
+                        motorParamsA.power = -power;
+                    } else {
+                        motorParamsA.power = power;
+                    }
+                    motorParamsA.tacholimit = abs(angle);
+                    motorParamsA.speedreg = speedreg;
+                    motorParamsA.holdbrake = holdbrake;
+                    motorParamsA.smoothstart = smoothstart;
+
+
+                    if (taskArunning == false) {
+                        start MoveA;
+                    } else {
+                        TaskBusySignal();
+                    } // end if
+
+                } else if (port == 1) { // OUT_B
+                    TextOut(0,LCD_LINE1,StrCat("Min B: ",NumToStr(min_B)),true);
+                    TextOut(0,LCD_LINE2,StrCat("Max B: ",NumToStr(max_B)),false);
+                    TextOut(0,LCD_LINE3,StrCat("Power set: ",NumToStr(power)),false);
+                    TextOut(0,LCD_LINE4,StrCat("Abs set  : ",NumToStr(angle)),false);
+                    TextOut(0,LCD_LINE5,StrCat("Cur count: ",NumToStr(MotorRotationCount(OUT_B))),false);
+                    angle = AbsToRel(min_B, max_B, OUT_B, angle);
+                    if(angle < 0) {
+                        motorParamsB.power = -power;
+                    } else {
+                        motorParamsB.power = power;
+                    }
+                    motorParamsB.tacholimit = abs(angle);
+                    motorParamsB.speedreg = speedreg;
+                    motorParamsB.holdbrake = holdbrake;
+                    motorParamsB.smoothstart = smoothstart;
+
+                    TextOut(0,LCD_LINE6,StrCat("Power: ",NumToStr(motorParamsB.power)),false);
+                    TextOut(0,LCD_LINE7,StrCat("Tacho: ",NumToStr(motorParamsB.tacholimit)),false);
+
+                    if (taskBrunning == false) {
+                        start MoveB;
+                    } else {
+                        TaskBusySignal();
+                    } // end if
+
+                } else if (port == 2) { // OUT_C
+
+                    angle = AbsToRel(min_C, max_C, OUT_C, angle);
+                    if(angle < 0) {
+                        motorParamsC.power = -power;
+                    } else {
+                        motorParamsC.power = power;
+                    }
+                    motorParamsC.tacholimit = abs(angle);
+                    motorParamsC.speedreg = speedreg;
+                    motorParamsC.holdbrake = holdbrake;
+                    motorParamsC.smoothstart = smoothstart;
+
+                    if (taskCrunning == false) {
+                        start MoveC;
+                    } else {
+                       TaskBusySignal();
+                    }// end if
+
+                } else { // Otherwise (OUT_AB, OUT_AC, OUT_BC, OUT_ABC?)
+
+                    SyncPorts = port;
+
+                    motorParamsSync.power = power;
+                    motorParamsSync.tacholimit = angle;
+                    motorParamsSync.turnratio = 0; //turnratio;
+                    motorParamsSync.speedreg = false; //always for sync!
+                    motorParamsSync.holdbrake = holdbrake;
+                    motorParamsSync.smoothstart = smoothstart;
+
+                    // this doesn't look elegant at all, but it works.
+                    if (  ((port == 3) && (taskArunning == false) && (taskBrunning == false))
+                       || ((port == 4) && (taskArunning == false) && (taskCrunning == false))
+                       || ((port == 5) && (taskBrunning == false) && (taskCrunning == false)) )  {
+                        start MoveSync;
+                    } else {
+                       TaskBusySignal();
+                    }//end if
+
+                }//end if
+
+                //PlayTone(440, 50);
+
+                break;
             case PROTO_RESET_ERROR_CORRECTION: // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
                 tmp      = SubStr(in,  1, 1);  // pos 1
@@ -839,6 +983,43 @@ task main(){
 
 
                 break;
+
+            case PROTO_SET_LIMIT: // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+                // parse...
+                tmp      = SubStr(in,  1, 1);  // pos 1
+                port     = StrToNum(tmp);
+
+                tmp      = SubStr(in,  2, 3);  // pos 2 3 4
+                edge     = StrToNum(tmp);
+
+                if(port==0) {
+                    if(edge==0) {
+                        min_A = MotorRotationCount(OUT_A);
+                        TextOut(0,LCD_LINE1, StrCat("Min A = ",NumToStr(min_A)), true);
+                    } else {
+                        max_A = MotorRotationCount(OUT_A);
+                        TextOut(0,LCD_LINE1, StrCat("Max A = ",NumToStr(max_A)), true);
+                    }
+                } else if(port==1) {
+                    if(edge==0) {
+                        min_B = MotorRotationCount(OUT_B);
+                        TextOut(0,LCD_LINE1, StrCat("Min B = ",NumToStr(min_B)), true);
+                    } else {
+                        max_B = MotorRotationCount(OUT_B);
+                        TextOut(0,LCD_LINE1, StrCat("Max B = ",NumToStr(max_B)), true);
+                    }
+                } else {
+                    if(edge==0) {
+                        min_C = MotorRotationCount(OUT_C);
+                        TextOut(0,LCD_LINE1, StrCat("Min C = ",NumToStr(min_C)), true);
+                    } else {
+                        max_C = MotorRotationCount(OUT_C);
+                        TextOut(0,LCD_LINE1, StrCat("Max C = ",NumToStr(max_C)), true);
+                    }
+                }
+                break;
+
             }//end switch - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 

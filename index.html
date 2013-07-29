@@ -1,12 +1,161 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-<script src="/socket.io/socket.io.js"></script>
-<script>
-  var socket = io.connect('http://localhost:8080');
-  socket.on('pos', function(data) { console.log(data) })
-  socket.on('msg', function(data) { console.log(data) })
-</script>
+<!-- Bootstrap CSS from CDN -->
+<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0-rc1/css/bootstrap.min.css">
+
+<!-- Enable responsive -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style type="text/css">
+  .row {
+    *zoom: 1;
+    margin-top: 10px;
+  }
+</style>
+
 </head>
 <body>
+<div class="container">
+
+  <div id="xy">
+    <div class="row">
+      <div class="col-2">
+      </div>
+      <div class="col-2">
+        <button x="0" y="100" type="button" class="btn btn-primary btn-large btn-block">&nbsp;</button>
+      </div>
+      <div class="col-2">
+        <button x="25" y="100" type="button" class="btn btn-primary btn-large btn-block">&nbsp;</button>
+      </div>
+      <div class="col-2">
+        <button x="50" y="100" type="button" class="btn btn-primary btn-large btn-block">&nbsp;</button>
+      </div>
+      <div class="col-2">
+        <button x="75" y="100" type="button" class="btn btn-primary btn-large btn-block">&nbsp;</button>
+      </div>
+      <div class="col-2">
+        <button x="100" y="100" type="button" class="btn btn-primary btn-large btn-block">&nbsp;</button>
+      </div>
+    </div>  
+    <div class="row">
+      <div class="col-2">
+      </div>
+      <div class="col-2">
+        <button x="0" y="75" type="button" class="btn btn-primary btn-large btn-block">&nbsp;</button>
+      </div>
+      <div class="col-2">
+        <button x="25" y="75" type="button" class="btn btn-primary btn-large btn-block">&nbsp;</button>
+      </div>
+      <div class="col-2">
+        <button x="50" y="75" type="button" class="btn btn-primary btn-large btn-block">&nbsp;</button>
+      </div>
+      <div class="col-2">
+        <button x="75" y="75" type="button" class="btn btn-primary btn-large btn-block">&nbsp;</button>
+      </div>
+      <div class="col-2">
+        <button x="100" y="75" type="button" class="btn btn-primary btn-large btn-block">&nbsp;</button>
+      </div>
+    </div>  
+    <div class="row">
+      <div class="col-2">
+      </div>
+      <div class="col-2">
+        <button x="0" y="50" type="button" class="btn btn-primary btn-large btn-block">&nbsp;</button>
+      </div>
+      <div class="col-2">
+        <button x="25" y="50" type="button" class="btn btn-primary btn-large btn-block">&nbsp;</button>
+      </div>
+      <div class="col-2">
+        <button x="50" y="50" type="button" class="btn btn-primary btn-large btn-block">&nbsp;</button>
+      </div>
+      <div class="col-2">
+        <button x="75" y="50" type="button" class="btn btn-primary btn-large btn-block">&nbsp;</button>
+      </div>
+      <div class="col-2">
+        <button x="100" y="50" type="button" class="btn btn-primary btn-large btn-block">&nbsp;</button>
+      </div>
+    </div>  
+    <div class="row">
+      <div class="col-2">
+      </div>
+      <div class="col-2">
+        <button x="0" y="25" type="button" class="btn btn-primary btn-large btn-block">&nbsp;</button>
+      </div>
+      <div class="col-2">
+        <button x="25" y="25" type="button" class="btn btn-primary btn-large btn-block">&nbsp;</button>
+      </div>
+      <div class="col-2">
+        <button x="50" y="25" type="button" class="btn btn-primary btn-large btn-block">&nbsp;</button>
+      </div>
+      <div class="col-2">
+        <button x="75" y="25" type="button" class="btn btn-primary btn-large btn-block">&nbsp;</button>
+      </div>
+      <div class="col-2">
+        <button x="100" y="25" type="button" class="btn btn-primary btn-large btn-block">&nbsp;</button>
+      </div>
+    </div>  
+    <div class="row">
+      <div class="col-2">
+      </div>
+      <div class="col-2">
+        <button x="0" y="0" type="button" class="btn btn-primary btn-large btn-block">&nbsp;</button>
+      </div>
+      <div class="col-2">
+        <button x="25" y="0" type="button" class="btn btn-primary btn-large btn-block">&nbsp;</button>
+      </div>
+      <div class="col-2">
+        <button x="50" y="0" type="button" class="btn btn-primary btn-large btn-block">&nbsp;</button>
+      </div>
+      <div class="col-2">
+        <button x="75" y="0" type="button" class="btn btn-primary btn-large btn-block">&nbsp;</button>
+      </div>
+      <div class="col-2">
+        <button x="100" y="0" type="button" class="btn btn-primary btn-large btn-block">&nbsp;</button>
+      </div>
+    </div>  
+  </div>
+  <div class="row text-center">
+      <div class="col-2 col-offset-5">
+        <button id="open_claw" type="button" class="btn btn-primary btn-large btn-block">Open</button>
+      </div>
+      <div class="col-2">
+        <button id="close_claw" type="button" class="btn btn-primary btn-large btn-block">Close</button>
+      </div>
+  </div>
+</div>
+<!-- JavaScript plugins (requires jQuery) -->
+<script src="http://code.jquery.com/jquery.js"></script>
+<!-- Bootstrap JavaScript from CDN -->
+<script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0-rc1/js/bootstrap.min.js"></script>
+<script src="/socket.io/socket.io.js"></script>
+<script>
+  var socket = io.connect('http://'+window.location.host);
+  socket.on('pos', function(data) { console.log(data) })
+  socket.on('msg', function(data) { console.log(data) })
+
+  $('#xy').on('click', function(e) {
+    var x_attr = e.target.attributes.getNamedItem("x")
+    var y_attr = e.target.attributes.getNamedItem("y")
+
+    if(x_attr && y_attr) {
+      console.log("Moving to ("+x_attr.value+","+y_attr.value+")")
+      socket.emit('abs', { motor: 2, pos: 100-parseInt(x_attr.value) })
+      socket.emit('abs', { motor: 1, pos: parseInt(y_attr.value) })
+    } else {
+      console.log("x/y area clicked but no x/y defined on element "+e.target.nodeName)
+    }
+  });
+
+  $('#open_claw').on('click', function(e) {
+    socket.emit('abs', { motor: 0, power: 20, pos: 0 })
+  });
+
+  $('#close_claw').on('click', function(e) {
+    socket.emit('abs', { motor: 0, power: 20, pos: 100 })
+  });
+
+
+</script>
 </body>
 </html>
