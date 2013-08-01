@@ -1,11 +1,11 @@
 {
   "author": "Jesper Joergensen",
-  "name": "nxt1-seed",
-  "description": "Basic code for talking to NXT 1 over Bluetooth direct communications protocol",
+  "name": "node-nxt-motors",
+  "description": "Control NXT motors from a browser via web sockets.",
   "version": "0.0.1",
   "repository": {
     "type": "git",
-    "url": "git://github.com/jesperfj/nxt1-seed.git"
+    "url": "git://github.com/jesperfj/node-nxt-motors.git"
   },
   "engines": {
     "node": "0.10.x",
