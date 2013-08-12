@@ -27,11 +27,13 @@ var nxt = new Nxt(NXT_PORT, function() {
 
   // handler to serve the basic index.html
   function handler (req, res) {
-    fs.readFile(__dirname + '/index.html',
+    var url = require('url').parse(req.url)
+    console.log('Loading file '+req.url)
+    fs.readFile(__dirname + url.pathname,
     function (err, data) {
       if (err) {
         res.writeHead(500);
-        return res.end('Error loading index.html');
+        return res.end('Error loading '+url.pathname);
       }
 
       res.writeHead(200);
@@ -94,7 +96,7 @@ var nxt = new Nxt(NXT_PORT, function() {
 
 
       // power is a 3 char value from 0 to 100. First we ensure min/max
-      var pint = (data.power > 100 ? 100 : data.power)
+      var pint = data.power ? (data.power > 100 ? 100 : data.power) : 100
       pint = pint < 0 ? 0 : pint
 
       if(data.delta < 0) {

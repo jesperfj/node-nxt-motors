@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- Bootstrap CSS from CDN -->
+<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0-rc1/css/bootstrap.min.css">
+
+<!-- Enable responsive -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style type="text/css">
+  .row {
+    *zoom: 1;
+    margin-top: 10px;
+  }
+</style>
+
+</head>
+<body>
+<div class="container">
+
+  <div class="row">
+    <div class="col-2">
+    </div>
+    <div class="col-2">
+      <button id="forward" type="button" class="btn btn-primary btn-large btn-block">&nbsp;</button>
+    </div>
+    <div class="col-2">
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-2">
+      <button id="left" type="button" class="btn btn-primary btn-large btn-block">&nbsp;</button>
+    </div>
+    <div class="col-2">
+      <button id="stop" type="button" class="btn btn-primary btn-large btn-block">&nbsp;</button>
+    </div>
+    <div class="col-2">
+      <button id="right" type="button" class="btn btn-primary btn-large btn-block">&nbsp;</button>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-2">
+    </div>
+    <div class="col-2">
+      <button id="back" type="button" class="btn btn-primary btn-large btn-block">&nbsp;</button>
+    </div>
+    <div class="col-2">
+    </div>
+  </div>
+</div>
+
+<!-- JavaScript plugins (requires jQuery) -->
+<script src="http://code.jquery.com/jquery.js"></script>
+<!-- Bootstrap JavaScript from CDN -->
+<script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0-rc1/js/bootstrap.min.js"></script>
+<script src="/socket.io/socket.io.js"></script>
+<script>
+  var socket = io.connect('http://'+window.location.host);
+  socket.on('pos', function(data) { console.log(data) })
+  socket.on('msg', function(data) { console.log(data) })
+
+  $('#forward').on('click', function(e) {
+    socket.emit('mov', { motor: 3, power: 100, delta: 1000 })
+  });
+
+  $('#left').on('click', function(e) {
+    socket.emit('mov', { motor: 0, power: 100, delta: 300 })
+    socket.emit('mov', { motor: 1, power: 100, delta: -300 })
+  });
+  $('#right').on('click', function(e) {
+    socket.emit('mov', { motor: 0, power: 100, delta: -300 })
+    socket.emit('mov', { motor: 1, power: 100, delta: 300 })
+  });
+
+  $('#back').on('click', function(e) {
+    socket.emit('mov', { motor: 3, power: 100, delta: -1000 })
+  });
+
+</script>
+</body>
+</html>
