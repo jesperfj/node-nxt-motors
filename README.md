@@ -54,7 +54,13 @@ To compile the source you'll need the nbc compiler. From the root of this repo, 
 
     $ . install_nbc.sh
 
-(Note that it's always a good idea to inspect shell scripts like this before running it). The shell script will download the Mac OS X nbc tar ball, unpack it in `./nbc`, and add it to `PATH`. Test by running `nbc`:
+(Note that it's always a good idea to inspect shell scripts like this before running it). The shell script will download the Mac OS X nbc tar ball, unpack it in `./nbc`, and add it to `PATH`. 
+
+NBC requires the Fantom driver from Lego which you will have to install separately from the [Lego Mindstorms support site](http://mindstorms.lego.com/en-us/support/files/driver.aspx):
+
+![](http://cl.ly/image/3B0X2P0q1q2C/Image%202013.08.17%2011%3A57%3A17%20PM.png)
+
+Click on the download link and download and install the Mac driver. Once the driver is installed you can test out `nbc` by simply running it from the command line:
 
     $ nbc
     Next Byte Codes Compiler version 1.2 (1.2.1.r4, built Tue Mar 15 15:56:24 CDT 2011)
