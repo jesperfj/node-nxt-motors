@@ -2,52 +2,57 @@
 <html lang="en">
 <head>
 <!-- Bootstrap CSS from CDN -->
-<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0-rc1/css/bootstrap.min.css">
+<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0-rc2/css/bootstrap.min.css">
 
 <!-- Enable responsive -->
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0 maximum-scale=1.0, user-scalable=no">
 
 <style type="text/css">
   .row {
-    *zoom: 1;
-    margin-top: 10px;
+//    *zoom: 1;
+    margin-top: 20px;
+  }
+  .vspacer {
+    margin-top: 400px;    
   }
 </style>
 
 </head>
 <body>
-<div class="container">
+<div id="buttons" class="container">
 
   <div class="row">
-    <div class="col-2">
+    <div class="col-xs-4">
     </div>
-    <div class="col-2">
+    <div class="col-xs-4">
       <button id="forward" type="button" class="btn btn-primary btn-large btn-block">&nbsp;</button>
     </div>
-    <div class="col-2">
+    <div class="col-xs-4">
     </div>
   </div>
   <div class="row">
-    <div class="col-2">
+    <div class="col-xs-4">
       <button id="left" type="button" class="btn btn-primary btn-large btn-block">&nbsp;</button>
     </div>
-    <div class="col-2">
+    <div class="col-xs-4">
       <button id="stop" type="button" class="btn btn-primary btn-large btn-block">&nbsp;</button>
     </div>
-    <div class="col-2">
+    <div class="col-xs-4">
       <button id="right" type="button" class="btn btn-primary btn-large btn-block">&nbsp;</button>
     </div>
   </div>
   <div class="row">
-    <div class="col-2">
+    <div class="col-xs-4">
     </div>
-    <div class="col-2">
+    <div class="col-xs-4">
       <button id="back" type="button" class="btn btn-primary btn-large btn-block">&nbsp;</button>
     </div>
-    <div class="col-2">
+    <div class="col-xs-4">
     </div>
   </div>
 </div>
+<div class="vspacer">
+</div>  
 
 <!-- JavaScript plugins (requires jQuery) -->
 <script src="http://code.jquery.com/jquery.js"></script>
@@ -55,25 +60,37 @@
 <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0-rc1/js/bootstrap.min.js"></script>
 <script src="/socket.io/socket.io.js"></script>
 <script>
+  window.onload = function() {
+      setTimeout(function() { window.scrollTo(0, 1) }, 100);
+  };
+
   var socket = io.connect('http://'+window.location.host);
   socket.on('pos', function(data) { console.log(data) })
   socket.on('msg', function(data) { console.log(data) })
+  socket.on('nxtstate', function(data) { console.log('nxtstate: '+data) })
 
-  $('#forward').on('click', function(e) {
-    socket.emit('mov', { motor: 3, power: 100, delta: 1000 })
+  $('#buttons').on('mouseup touchend', function(e) {
+    socket.emit('stop')
   });
 
-  $('#left').on('click', function(e) {
-    socket.emit('mov', { motor: 0, power: 100, delta: 300 })
-    socket.emit('mov', { motor: 1, power: 100, delta: -300 })
-  });
-  $('#right').on('click', function(e) {
-    socket.emit('mov', { motor: 0, power: 100, delta: -300 })
-    socket.emit('mov', { motor: 1, power: 100, delta: 300 })
+  $('#forward').on('mousedown touchstart', function(e) {
+    socket.emit('go', { dir: 'fwd' })
   });
 
-  $('#back').on('click', function(e) {
-    socket.emit('mov', { motor: 3, power: 100, delta: -1000 })
+  $('#left').on('mousedown touchstart', function(e) {
+    socket.emit('go', { dir: 'left' })
+  });
+
+  $('#right').on('mousedown touchstart', function(e) {
+    socket.emit('go', { dir: 'right' })
+  });
+
+  $('#back').on('mousedown touchstart', function(e) {
+    socket.emit('go', { dir: 'rev' })
+  });
+
+  $('#stop').on('click', function(e) {
+    socket.emit('stop')
   });
 
 </script>
