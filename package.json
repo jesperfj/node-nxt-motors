@@ -13,7 +13,8 @@
   },
   "dependencies": {
     "mindstorms_bluetooth": "git://github.com/jesperfj/node-mindstorm-bt.git",
-    "socket.io" : "~0.9.16"
+    "socket.io" : "~0.9.16",
+    "node-mac" : "~0.1.3"
   },
   "devDependencies": {}
 }
