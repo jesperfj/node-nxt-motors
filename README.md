@@ -1,6 +1,6 @@
 Based on [node-nxt-seed](https://github.com/jesperfj/node-nxt-seed).
 
-This repo is a baseline for controlling the motors of an NXT1 Lego controller via JavaScript in a modern browser through a websockets connection to a Node.js intermediary.
+This repo is a playground for controlling various Lego NXT robots from a mobile device using HTML, Javascript, web sockets and Node.js.
 
 The goal is to build some reusable bits that makes it easy to
 
